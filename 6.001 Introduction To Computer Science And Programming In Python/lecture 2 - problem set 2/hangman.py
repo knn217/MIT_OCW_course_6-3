@@ -76,7 +76,14 @@ def get_guessed_word(secret_word, letters_guessed):
       which letters in secret_word have been guessed so far.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    return_str = '_' * len(secret_word)
+    for i in range(len(secret_word)):
+        for letter in letters_guessed:
+            if secret_word[i:i+1].lower() == letter.lower():
+                return_str = return_str[:i] + letter + return_str[i+1:]
+                break
+            
+    return return_str
 
 
 
