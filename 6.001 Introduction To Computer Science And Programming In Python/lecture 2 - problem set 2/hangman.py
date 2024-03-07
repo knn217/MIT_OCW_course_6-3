@@ -79,7 +79,7 @@ def get_guessed_word(secret_word, letters_guessed):
     return_str = '_' * len(secret_word)
     for i in range(len(secret_word)):
         for letter in letters_guessed:
-            if secret_word[i:i+1].lower() == letter.lower():
+            if secret_word[i].lower() == letter.lower():
                 return_str = return_str[:i] + letter + return_str[i+1:]
                 break
             
@@ -94,7 +94,14 @@ def get_available_letters(letters_guessed):
       yet been guessed.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    avail = string.ascii_lowercase
+    for i in range(len(avail)):
+        for letter in letters_guessed:
+            if avail[i].lower() == letter.lower():
+                avail = avail[:i] + '_' + avail[i+1:]
+                break
+            
+    return avail.replace('_', '')
     
     
 
