@@ -215,7 +215,13 @@ def match_with_gaps(my_word, other_word):
         False otherwise: 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    for i in range(len(my_word)):
+        if my_word[i] == '_':
+            continue
+        elif my_word[i].lower() != other_word[i].lower():
+            return False
+    
+    return True
 
 
 
