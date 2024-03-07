@@ -215,7 +215,10 @@ def match_with_gaps(my_word, other_word):
         False otherwise: 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    for i in range(len(my_word)):
+    if len(my_word.strip()) != len(other_word.strip()):
+        return False
+    
+    for i in range(len(my_word.strip())):
         if my_word[i] == '_':
             continue
         elif my_word[i].lower() != other_word[i].lower():
@@ -236,7 +239,15 @@ def show_possible_matches(my_word):
 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    matches = ''
+    for match in wordlist:
+        if match_with_gaps(my_word, match):
+            matches += match + ' '
+    
+    if matches == '':
+        print('No matches found ')
+    else:
+        print(matches)
 
 
 
