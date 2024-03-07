@@ -279,7 +279,67 @@ def hangman_with_hints(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    guesses = 6
+    warnings = 3
+    letters_guessed = []
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    guessed_str = '_' * len(secret_word)
+    input_letter = '_'
+    print('Welcome to the game Hangman!')
+    print('I am thinking of a word that is ' + str(len(secret_word)) + ' letters long.')  
+    print('You have '+ str(warnings) + ' warnings left.')
+        
+    while guessed_str != secret_word:
+        while True:
+            print('-------------')
+            print('You have '+ str(guesses) + ' guesses left.')
+            print('Available letters: ' + get_available_letters(letters_guessed))
+            input_letter = input('Please guess a letter: ')
+            if str.isalpha(input_letter):
+                if input_letter in letters_guessed:
+                    if warnings > 0:
+                        warnings -= 1
+                        print('Oops! You\'ve already guessed that letter. You have ' + str(warnings) + ' warnings left: ' + guessed_str)
+                    else:
+                        warnings = 3
+                        guesses -= 1
+                        print('Oops! You\'ve already guessed that letter. You have no warnings left so you lose one guess: ' + guessed_str)
+                else:
+                    letters_guessed += input_letter
+                    break
+            else:
+                if input_letter == '*':
+                    print('Possible word matches for ' + guessed_str + ' are: ')
+                    show_possible_matches(guessed_str)
+                elif warnings > 0:
+                    warnings -= 1
+                    print('Oops! That is not a valid letter. You have ' + str(warnings) + ' warnings left: ' + guessed_str)
+                else:
+                    warnings = 3
+                    guesses -= 1
+                    print('Oops! That is not a valid letter. You have no warnings left so you lose one guess: ' + guessed_str)
+
+        guessed_str2 = get_guessed_word(secret_word, letters_guessed)
+        if guessed_str == guessed_str2:
+            print('Oops! That letter is not in my word: ' + guessed_str)
+            if input_letter in vowels:
+                guesses -= 2
+            else:
+                guesses -= 1
+
+        else:
+            guessed_str = guessed_str2
+            print('Good guess: ' + guessed_str)
+        
+        if guesses <= 0:
+            guesses = 0
+            print('Sorry, you ran out of guesses. The word was: ' + secret_word)
+            break
+    
+    if guesses > 0:
+        print('Congratulations, you won!')
+        print('Your total score for this game is: ' + str(guesses * len(set(secret_word))))
+        
 
 
 
@@ -296,8 +356,9 @@ if __name__ == "__main__":
     # uncomment the following two lines.
     
     secret_word = choose_word(wordlist)
-    #secret_word = 'else'
-    hangman(secret_word)
+    #secret_word = 'apple'
+    #hangman(secret_word)
+    hangman_with_hints(secret_word)
 
 ###############
     
