@@ -61,7 +61,10 @@ def is_word_guessed(secret_word, letters_guessed):
       False otherwise
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    guess = ''
+    for letter in letters_guessed:
+        guess += letter
+    return (secret_word.lower() == guess.lower())
 
 
 
