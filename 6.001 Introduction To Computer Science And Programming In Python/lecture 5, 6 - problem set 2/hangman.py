@@ -76,18 +76,21 @@ def get_guessed_word(secret_word, letters_guessed):
       which letters in secret_word have been guessed so far.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    # turn secret word's letters into '_'
-    return_str = '_' * len(secret_word)
-    # iterate through all letters in secret_word and letters_guessed
-    for i in range(len(secret_word)):
-        for letter in letters_guessed:
-            # if the guessed letter match, replace the '_' at this index with the letter
-            if secret_word[i].lower() == letter.lower():
-                return_str = return_str[:i] + letter + return_str[i+1:]
-                break
-     
-    return return_str
-
+    # child function to check if a letter is guessed 
+    def get_guessed_letter(letter, letters_guessed):
+        if letter.lower() in letters_guessed:
+            return letter
+        else:
+            return '_'
+    
+    # apply recursion to the problem
+    # base case is when secret_word is 1 letter long
+    if len(secret_word) <= 1:
+        return get_guessed_letter(secret_word[0], letters_guessed) 
+    # else we re-apply the function to the secret_word after removing the 1st letter
+    else:
+        return get_guessed_letter(secret_word[0], letters_guessed) + get_guessed_word(secret_word[1:], letters_guessed)
+            
 
 
 def get_available_letters(letters_guessed):
@@ -173,7 +176,7 @@ def hangman(secret_word):
                         print('Oops! You\'ve already guessed that letter. You have no warnings left so you lose one guess: ' + guessed_str)
                 # legal input, update guess and break out of infinite loop
                 else:
-                    letters_guessed += input_letter
+                    letters_guessed += input_letter.lower()
                     break
             # if input is not alphabetical
             else:
@@ -248,7 +251,7 @@ def match_with_gaps(my_word, other_word):
         if my_word[i] == '_':
             continue
         # if the letter is alphabetical, but different from other_word's same letter, return False
-        elif my_word[i].lower() != other_word[i].lower():
+        elif my_word[i] != other_word[i]:
             return False
     
     # if iterate through the entire word without a mismatch, return true
@@ -348,7 +351,7 @@ def hangman_with_hints(secret_word):
                         print('Oops! You\'ve already guessed that letter. You have no warnings left so you lose one guess: ' + guessed_str)
                 # legal input, update guess and break out of infinite loop
                 else:
-                    letters_guessed += input_letter
+                    letters_guessed += input_letter.lower()
                     break
             # if input is not alphabetical
             else:
