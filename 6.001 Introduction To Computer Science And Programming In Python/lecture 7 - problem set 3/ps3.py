@@ -94,7 +94,7 @@ def get_word_score(word, n):
     fst_component = 0
     # accumulate 1st component
     for letter in word.lower():
-        fst_component += SCRABBLE_LETTER_VALUES[letter]
+        fst_component += SCRABBLE_LETTER_VALUES.get(letter, 0)
     # calculate 2nd component
     sec_component = max(7 * len(word) - 3 * (n - len(word)), 1)
     return fst_component * sec_component
@@ -143,8 +143,12 @@ def deal_hand(n):
     num_vowels = int(math.ceil(n / 3))
 
     for i in range(num_vowels):
-        x = random.choice(VOWELS)
-        hand[x] = hand.get(x, 0) + 1
+        # add wild card in the 1st iterator 
+        if i == 0:
+            hand['*'] = 1
+        else:
+            x = random.choice(VOWELS)
+            hand[x] = hand.get(x, 0) + 1
     
     for i in range(num_vowels, n):    
         x = random.choice(CONSONANTS)
@@ -202,18 +206,21 @@ def is_valid_word(word, hand, word_list):
     """
     # switch to lowercase 1st
     lower = word.lower()
-    # check if the word is in word list 
-    if lower in word_list:
-        # get the freq dict
-        word_freq = get_frequency_dict(lower)
-        for letter in lower:
-            # compare the freq, if greater than the freq the hand provided, the word is invalid
-            if word_freq.get(letter, 0) > hand.get(letter, 0):
-                return False
-        return True
-    # if not in word list, return false without checking the other condition
-    else:
-        return False
+    for vowel in VOWELS:
+        test_word = lower.replace('*', vowel)
+        # check if the word is in word list 
+        if test_word in word_list:
+            # get the freq dict
+            word_freq = get_frequency_dict(lower)
+            for letter in lower:
+                # compare the freq, if greater than the freq the hand provided, the word is invalid
+                if word_freq.get(letter, 0) > hand.get(letter, 0):
+                    return False
+            return True
+        # if not in word list, continue loop
+        
+    # return false if finished loop
+    return False            
 
 
 #
