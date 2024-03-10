@@ -200,8 +200,21 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     returns: boolean
     """
+    # switch to lowercase 1st
+    lower = word.lower()
+    # check if the word is in word list 
+    if lower in word_list:
+        # get the freq dict
+        word_freq = get_frequency_dict(lower)
+        for letter in lower:
+            # compare the freq, if greater than the freq the hand provided, the word is invalid
+            if word_freq.get(letter, 0) > hand.get(letter, 0):
+                return False
+        return True
+    # if not in word list, return false without checking the other condition
+    else:
+        return False
 
-    pass  # TO DO... Remove this line when you implement this function
 
 #
 # Problem #5: Playing a hand
