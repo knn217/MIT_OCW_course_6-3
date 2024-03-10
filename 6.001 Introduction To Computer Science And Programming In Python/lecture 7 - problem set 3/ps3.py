@@ -92,9 +92,10 @@ def get_word_score(word, n):
     returns: int >= 0
     """
     fst_component = 0
+    # accumulate 1st component
     for letter in word.lower():
         fst_component += SCRABBLE_LETTER_VALUES[letter]
-    
+    # calculate 2nd component
     sec_component = max(7 * len(word) - 3 * (n - len(word)), 1)
     return fst_component * sec_component
     
@@ -172,8 +173,18 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
+    # make a copy so that hand is not affected
+    hand2 = hand.copy()
+    for letter in word.lower():
+        # if freq > 1 then freq subtract by 1 
+        if hand2.get(letter, 0) > 1:
+            hand2[letter] -= 1
+        # if freq == 1 then subtracting will result in freq of 0, so we can just remove this element
+        elif hand2.get(letter, 0) == 1:
+            hand2.pop(letter)
+    # return the copy
+    return hand2
 
-    pass  # TO DO... Remove this line when you implement this function
 
 #
 # Problem #3: Test word validity
