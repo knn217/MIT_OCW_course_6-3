@@ -95,13 +95,38 @@ class Trigger(object):
 
 # Problem 2
 # TODO: PhraseTrigger
-
+class PhraseTrigger(Trigger):
+    def __init__(self, phrase):
+        self.phrase = phrase.lower().translate(str.maketrans('', '', string.punctuation))
+        
+    def is_phrase_in(self, text):
+        # process text: lowercase and replace all punctuations with ' '
+        low = text.lower().translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation)))
+        # Now split will only contains valid words without punctuations
+        lst = low.split()
+        # 1st: check if the processed text contains the phrase if both removed all ' '
+        if self.phrase.translate(str.maketrans('', '', ' ')) in low.translate(str.maketrans('', '', ' ')):
+            # 2nd: check if each the words in phrase appear entirely in the text
+            for word in self.phrase.split():
+                if word not in lst:
+                    return False
+            return True
+        else:
+            return False
+        
 # Problem 3
 # TODO: TitleTrigger
-
+class TitleTrigger(PhraseTrigger):
+    def evaluate(self, story):
+        return self.is_phrase_in(story.get_title())
+        
+        
 # Problem 4
 # TODO: DescriptionTrigger
-
+class DescriptionTrigger(PhraseTrigger):
+    def evaluate(self, story):
+        return self.is_phrase_in(story.get_description())
+    
 # TIME TRIGGERS
 
 # Problem 5
