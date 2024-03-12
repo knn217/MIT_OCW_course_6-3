@@ -233,8 +233,8 @@ class CiphertextMessage(Message):
         for i in range(26):
             decrypt = self.apply_shift(i)
             valid = 0
-            for word in self.valid_words:
-                if word in decrypt:
+            for word in decrypt.split():
+                if is_word(self.valid_words, word):
                     valid += 1
             if valid > most_valid:
                 most_valid = valid
