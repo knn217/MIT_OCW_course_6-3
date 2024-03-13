@@ -194,7 +194,13 @@ def filter_stories(stories, triggerlist):
     # TODO: Problem 10
     # This is a placeholder
     # (we're just returning all the stories, with no filtering)
-    return stories
+    new_stories = []
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                new_stories += [story]
+                break
+    return new_stories
 
 
 
@@ -221,9 +227,29 @@ def read_trigger_config(filename):
     # TODO: Problem 11
     # line is the list of lines that you need to parse and for which you need
     # to build triggers
+    trigger_list = [] # contains all triggers from file
+    return_list = []  # contains all triggers that are added
+    trigger_dict = {'TITLE': TitleTrigger, 'DESCRIPTION': DescriptionTrigger, 'AFTER': AfterTrigger, 'BEFORE': BeforeTrigger, 'NOT': NotTrigger, 'AND': AndTrigger, 'OR': OrTrigger}
+    for line in lines:
+        split = line.split(',')
+        for i in range(len(split)):
+            if split[i].strip('t').isnumeric(): # process strings of format: t+number 
+                split[i] = int(split[i].strip('t')) - 1 # turn these strings into their int - 1 to use them as index       
+        trigger_obj = trigger_dict.get(split[1], False) # trigger_obj is either an object of type Trigger, or False
+        if trigger_obj:
+            if split[1] in ['AND', 'OR']: # these objects needs 2 args for init
+                trigger_obj.__init__(trigger_obj, trigger_list[split[-2]], trigger_list[split[-1]])
+            elif split[1] == 'NOT': # same as above but only need 1 arg for init
+                trigger_obj.__init__(trigger_obj, trigger_list[split[-1]])
+            else: # the rest only need 1 arg for init, but the arg is of type string
+                trigger_obj.__init__(trigger_obj, split[-1])
+            trigger_list += [trigger_obj]
+        else:
+            for indx in split[1:]:
+                return_list += [trigger_list[indx]]
 
-    print(lines) # for now, print it so you see what it contains!
-
+    return return_list
+    
 
 
 SLEEPTIME = 120 #seconds -- how often we poll
@@ -240,7 +266,7 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
