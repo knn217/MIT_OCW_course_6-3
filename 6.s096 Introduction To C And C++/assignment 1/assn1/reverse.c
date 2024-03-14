@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include "reverse.h"
 
-void backwards(char *str, int len) {
-	char reversed[len+1];
+void reverse(char *str, int len) {
+	char reversed[len+1];  // C99 allows variable length arrays to be created on the stack so this is actually legal (for C99)
 	int pos = 0;
 	int caret = len;
 	reversed[len] = '\0';
