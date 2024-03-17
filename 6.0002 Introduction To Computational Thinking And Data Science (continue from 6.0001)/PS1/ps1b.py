@@ -22,8 +22,21 @@ def dp_make_weight(egg_weights, target_weight, memo = {}):
     
     Returns: int, smallest number of eggs needed to make target weight
     """
-    # TODO: Your code here
-    pass
+    # this implementation doesn't use dynamic programming
+    # I believe it is not needed since dynamic programming is for problems that need to use past output for current output
+    # this problem doesn't need past output
+    
+    # base case for recursion
+    if target_weight < 1:
+        return 0
+    else:
+        max_weight = 0
+        for weight in egg_weights:
+            if weight < target_weight:
+                # finds max weight that is under limit
+                max_weight = max(max_weight, weight)
+        # recursion
+        return target_weight // max_weight + dp_make_weight(egg_weights, target_weight % max_weight)
 
 # EXAMPLE TESTING CODE, feel free to add more if you'd like
 if __name__ == '__main__':
