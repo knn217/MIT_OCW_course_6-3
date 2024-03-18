@@ -20,7 +20,8 @@ from graph import Digraph, Node, WeightedEdge
 # represented?
 #
 # Answer:
-#
+# Nodes are buildings
+# Edges are distances from a building to another
 
 
 # Problem 2b: Implementing load_map
@@ -45,10 +46,31 @@ def load_map(map_filename):
 
     # TODO
     print("Loading map from file...")
-
+    # open file
+    map_file = open(map_filename, 'r')
+    graph = Digraph()
+    for line in map_file:
+        # each line only has name and weight, separated by ','
+        line = line.split(' ')
+        edge = WeightedEdge(line[0], line[1], int(line[2]), int(line[3]))
+        try:
+            graph.add_node(edge.src)
+        except:
+            print('src already existed')
+        try:
+            graph.add_node(edge.dest)
+        except:
+            print('dst already existed')
+        try:
+            graph.add_edge(edge)
+        except:
+            print('edge already existed')            
+    return graph       
+    
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
 
+print(load_map('test_load_map.txt'))
 
 #
 # Problem 3: Finding the Shorest Path using Optimized Search Method
@@ -215,6 +237,7 @@ class Ps2Test(unittest.TestCase):
     def test_impossible_path2(self):
         self._test_impossible_path('10', '32', total_dist=100)
 
-
+'''
 if __name__ == "__main__":
     unittest.main()
+'''
