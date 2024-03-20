@@ -56,21 +56,21 @@ def load_map(map_filename):
         try:
             graph.add_node(edge.get_source())
         except:
-            print('src already existed')
+            pass
         try:
             graph.add_node(edge.get_destination())
         except:
-            print('dst already existed')
+            pass
         try:
             graph.add_edge(edge)
         except:
-            print('edge already existed')            
+            pass
     return graph       
     
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
 
-print(load_map('test_load_map.txt'))
+#print(load_map('test_load_map.txt'))
 
 #
 # Problem 3: Finding the Shorest Path using Optimized Search Method
@@ -132,28 +132,19 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
             if dst not in path2[0]:# avoid loops
                 if (path2[2] + edge.get_outdoor_distance()) > max_dist_outdoors:# if met constraints
                     continue        # go to next edge
-                elif best_dist == 0 or (path2[1] + edge.get_total_distance()) < best_dist: # if path still shorter than the shortest distance found
+                elif best_dist == None or (path2[1] + edge.get_total_distance()) <= best_dist: # if path still shorter than the shortest distance found
                     path2[1] += edge.get_total_distance()    # update path2[1] to this dst
                     path2[2] += edge.get_outdoor_distance()  # update path2[2] to this dst
                     new_path = get_best_path(digraph, dst, end, path2, max_dist_outdoors, best_dist, best_path) # recursion
-                    if new_path != None and (best_path == None or best_path[1] > new_path[1]): 
-                        best_path = new_path     # update best path
-                        best_dist = best_path[1] # update best dist
+                    if new_path != None: 
+                        if best_path == None or best_path[1] > new_path[1] or (best_path[1] == new_path[1] and best_path[2] > new_path[2]): 
+                            best_path = new_path     # update best path
+                            best_dist = best_path[1] # update best dist
             path2 = path.copy()          # reset path2
             path2[0] = path[0].copy()    # this is like deep copy
     if best_path != None and best_path[0][0] == start: 
         return tuple(best_path[0]) # return tuple since this is required
     return best_path # return for recursion
-
-mit_map = load_map('mit_map.txt')
-print(mit_map)
-max_dst_outdoor = 60
-best_dist = 0
-best_path = None
-path = get_best_path(mit_map, '1', '2', [[],0,0], max_dst_outdoor, best_dist, best_path)
-print(path)
-print(best_dist)
-print(best_path)
 
 
 # Problem 3c: Implement directed_dfs
@@ -185,8 +176,12 @@ def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then raises a ValueError.
     """
-    # TODO
-    pass
+    # call get_best_path with max_total_dist as the best_dist contraint 
+    path = get_best_path(digraph, start, end, [[],0,0], max_dist_outdoors, max_total_dist, None)
+    if path == None:
+        raise ValueError('there is no path that meet these constraints') 
+    else:
+        return list(path)
 
 
 # ================================================================
@@ -272,7 +267,6 @@ class Ps2Test(unittest.TestCase):
     def test_impossible_path2(self):
         self._test_impossible_path('10', '32', total_dist=100)
 
-'''
+
 if __name__ == "__main__":
     unittest.main()
-'''
