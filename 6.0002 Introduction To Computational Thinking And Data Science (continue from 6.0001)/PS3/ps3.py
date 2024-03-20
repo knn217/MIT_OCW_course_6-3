@@ -202,11 +202,11 @@ class Robot(object):
         capacity: a positive interger; the amount of dirt cleaned by the robot 
                   in a single time-step
         """
-        self.dir = random.random() * 360
-        self.pos = Position(random.randrange(0, self.width), random.randrange(0, self.height))
         self.room = room
         self.speed = speed
         self.capacity = capacity
+        self.dir = random.random() * 360
+        self.pos = Position(random.randrange(0, self.room.width), random.randrange(0, self.room.height))
 
     def get_robot_position(self):
         """
@@ -370,11 +370,17 @@ class StandardRobot(Robot):
         rotate once to a random new direction, and stay stationary) and clean the dirt on the tile
         by its given capacity. 
         """
-        raise NotImplementedError
+        # calculate new position
+        new_pos = self.pos.get_new_position(self.dir, self.speed)
+        if self.room.is_position_valid(new_pos): # if valid, move to new pos and clean with it's capacity
+            self.set_robot_position(new_pos)
+            self.room.clean_tile_at_position(self.pos, self.capacity)
+        else:
+            self.set_robot_direction(random.random() * 360)
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-#test_robot_movement(StandardRobot, EmptyRoom)
-#test_robot_movement(StandardRobot, FurnishedRoom)
+test_robot_movement(StandardRobot, EmptyRoom)
+test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
 class FaultyRobot(Robot):
