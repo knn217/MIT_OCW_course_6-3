@@ -124,9 +124,9 @@ class RectangularRoom(object):
         Returns: an integer; the total number of clean tiles in the room
         """
         cleaned_tiles = 0
-        for x in self.tiles:
-            for y in x:
-                if y <= 0:
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.tiles[x][y] <= 0:
                     cleaned_tiles += 1
         return cleaned_tiles
         
@@ -257,7 +257,7 @@ class EmptyRoom(RectangularRoom):
         """
         Returns: an integer; the total number of tiles in the room
         """
-        raise NotImplementedError
+        return self.width * self.height
         
     def is_position_valid(self, pos):
         """
@@ -265,13 +265,13 @@ class EmptyRoom(RectangularRoom):
         
         Returns: True if pos is in the room, False otherwise.
         """
-        raise NotImplementedError
+        return self.is_position_in_room(pos)
         
     def get_random_position(self):
         """
         Returns: a Position object; a valid random position (inside the room).
         """
-        raise NotImplementedError
+        return Position(random.randrange(0, self.width), random.randrange(0, self.height))
 
 class FurnishedRoom(RectangularRoom):
     """
@@ -318,7 +318,7 @@ class FurnishedRoom(RectangularRoom):
         """
         Return True if tile (m, n) is furnished.
         """
-        raise NotImplementedError
+        return (m, n) in self.furniture_tiles
         
     def is_position_furnished(self, pos):
         """
@@ -326,7 +326,7 @@ class FurnishedRoom(RectangularRoom):
 
         Returns True if pos is furnished and False otherwise
         """
-        raise NotImplementedError
+        return self.is_tile_furnished(pos.get_x(), pos.get_y())
         
     def is_position_valid(self, pos):
         """
@@ -334,19 +334,24 @@ class FurnishedRoom(RectangularRoom):
         
         returns: True if pos is in the room and is unfurnished, False otherwise.
         """
-        raise NotImplementedError
+        return self.is_position_in_room(pos) and not self.is_position_furnished(pos)
         
     def get_num_tiles(self):
         """
         Returns: an integer; the total number of tiles in the room that can be accessed.
         """
-        raise NotImplementedError
+        tiles_num = 0
+        for x in range(self.width):
+            for y in range(self.height):
+                if not self.is_tile_furnished(x, y):
+                    tiles_num += 1
+        return tiles_num
         
     def get_random_position(self):
         """
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
         """
-        raise NotImplementedError
+        return Position(random.randrange(0, self.width), random.randrange(0, self.height))
 
 # === Problem 3
 class StandardRobot(Robot):
