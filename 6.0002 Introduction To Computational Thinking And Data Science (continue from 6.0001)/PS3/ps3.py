@@ -99,8 +99,8 @@ class RectangularRoom(object):
         Note: The amount of dirt on each tile should be NON-NEGATIVE.
               If the capacity exceeds the amount of dirt on the tile, mark it as 0.
         """
-        x = int(pos.get_x()) # tiles pos are intergers 
-        y = int(pos.get_y())
+        x = math.floor(pos.get_x()) # tiles pos are intergers 
+        y = math.floor(pos.get_y())
         self.tiles[x][y] -= capacity # clean the dirt amount at this tile with the capacity
 
     def is_tile_cleaned(self, m, n):
@@ -137,10 +137,11 @@ class RectangularRoom(object):
         pos: a Position object.
         Returns: True if pos is in the room, False otherwise.
         """
-        try:
-            self.clean_tile_at_position(pos, 0)
+        x = pos.get_x()
+        y = pos.get_y()
+        if x >= 0 and x <= self.width and y >= 0 and y <= self.height:
             return True
-        except IndexError:
+        else:
             return False
         
     def get_dirt_amount(self, m, n):
@@ -318,7 +319,7 @@ class FurnishedRoom(RectangularRoom):
         """
         Return True if tile (m, n) is furnished.
         """
-        return (m, n) in self.furniture_tiles
+        return (math.floor(m), math.floor(n)) in self.furniture_tiles # floor m and n since it can only be int
         
     def is_position_furnished(self, pos):
         """
@@ -334,7 +335,7 @@ class FurnishedRoom(RectangularRoom):
         
         returns: True if pos is in the room and is unfurnished, False otherwise.
         """
-        return self.is_position_in_room(pos) and not self.is_position_furnished(pos)
+        return self.is_position_in_room(pos) and (not self.is_position_furnished(pos))
         
     def get_num_tiles(self):
         """
@@ -343,7 +344,7 @@ class FurnishedRoom(RectangularRoom):
         tiles_num = 0
         for x in range(self.width):
             for y in range(self.height):
-                if not self.is_tile_furnished(x, y):
+                if not self.is_tile_furnished(x, y): # adds 1 to tiles num for every unfurnished tile
                     tiles_num += 1
         return tiles_num
         
@@ -370,8 +371,7 @@ class StandardRobot(Robot):
         rotate once to a random new direction, and stay stationary) and clean the dirt on the tile
         by its given capacity. 
         """
-        # calculate new position
-        new_pos = self.pos.get_new_position(self.dir, self.speed)
+        new_pos = self.pos.get_new_position(self.dir, self.speed) # calculate new position
         if self.room.is_position_valid(new_pos): # if valid, move to new pos and clean with it's capacity
             self.set_robot_position(new_pos)
             self.room.clean_tile_at_position(self.pos, self.capacity)
@@ -379,8 +379,8 @@ class StandardRobot(Robot):
             self.set_robot_direction(random.random() * 360)
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-test_robot_movement(StandardRobot, EmptyRoom)
-test_robot_movement(StandardRobot, FurnishedRoom)
+#test_robot_movement(StandardRobot, EmptyRoom)
+#test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
 class FaultyRobot(Robot):
@@ -420,10 +420,18 @@ class FaultyRobot(Robot):
         StandardRobot at this time-step (checking if it can move to a new position,
         move there if it can, pick a new direction and stay stationary if it can't)
         """
-        raise NotImplementedError
+        if self.gets_faulty(): # faulty
+            self.set_robot_direction(random.random() * 360) # change dir randomly
+        else: # not faulty
+            new_pos = self.pos.get_new_position(self.dir, self.speed) # calculate new position
+            if self.room.is_position_valid(new_pos): # if valid, move to new pos and clean with it's capacity
+                self.set_robot_position(new_pos)
+                self.room.clean_tile_at_position(self.pos, self.capacity)
+            else:
+                self.set_robot_direction(random.random() * 360) # change dir randomly
         
     
-#test_robot_movement(FaultyRobot, EmptyRoom)
+test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
 def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_coverage, num_trials,
