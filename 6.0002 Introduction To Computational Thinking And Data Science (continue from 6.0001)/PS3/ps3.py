@@ -431,7 +431,7 @@ class FaultyRobot(Robot):
                 self.set_robot_direction(random.random() * 360) # change dir randomly
         
     
-test_robot_movement(FaultyRobot, EmptyRoom)
+#test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
 def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_coverage, num_trials,
@@ -455,14 +455,26 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 FaultyRobot)
     """
-    raise NotImplementedError
+    time_steps = 0 # sum of all time steps for all robots in all trials 
+    for trial in range(num_trials):
+        for robot in range(num_robots):
+            current_time_steps = 0 # time steps for current robot at current trial
+            trial_room = EmptyRoom(width, height, dirt_amount) # create room each time to reset the dirt values
+            current_robot = robot_type(trial_room, speed, capacity) # create new robot to reset room's values
+            min_coverage_tiles = int(trial_room.get_num_tiles() * min_coverage) # calculate the min coverage in tiles 
+            while current_robot.room.get_num_cleaned_tiles() < min_coverage_tiles: # while clean tiles less than min coverage
+                current_robot.update_position_and_clean() # keep cleaning
+                current_time_steps += 1 # keep updating the current time steps
+            time_steps += current_time_steps
+            #print('robot ', robot, ' done: ', current_time_steps)
+    return time_steps / (num_robots * num_trials)
 
 
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
 
 # === Problem 6
 #
