@@ -634,3 +634,16 @@ total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
                                                       resistant=False,
                                                       mut_prob=0.8,
                                                       num_trials=50)
+
+#print(calc_95_ci(total_pop, 299))
+#print(calc_95_ci(resistant_pop, 299))
+# for the write up:
+# the lines commented out about printed out:
+    
+# A:
+# total: mean = 205.54; width = 9.23
+# resistant: mean = 205.54; width = 9.23
+
+# B:
+# total: mean = 0; width = 0
+# resistant: mean = 205.540; width = 0
