@@ -311,7 +311,12 @@ def calc_pop_std(populations, t):
         float: the standard deviation of populations across different trials at
              a specific time step
     """
-    pass  # TODO
+    avg_pop = calc_pop_avg(populations, t) # calculate avg population
+    sum_variance = 0 # for accumulating variance
+    for population in populations:
+        sum_variance += (population[t] - avg_pop) ** 2 # accumulate each variance at this time step
+    
+    return (sum_variance / len(populations)) ** 0.5 # standard deviation
 
 
 def calc_95_ci(populations, t):
@@ -335,9 +340,22 @@ def calc_95_ci(populations, t):
 
         I.e., you should return a tuple containing (mean, width)
     """
-    pass  # TODO
+    # compute the mean and standard deviation of the sample
+    mean = calc_pop_avg(populations, t)
+    standard_deviation = calc_pop_std(populations, t)
+    # estimate the standard error of the mean (SEM)
+    SEM = standard_deviation / (len(populations) ** 0.5)
+    # construct confidence intervals around the sample mean
+    width = 1.96 * SEM
+    
+    return (mean, width)
 
 
+#print(calc_95_ci(populations, 299))
+# for the write up:
+# the line commented out about printed out:
+# mean: 761.06
+# width: 3.8922
 ##########################
 # PROBLEM 4
 ##########################
