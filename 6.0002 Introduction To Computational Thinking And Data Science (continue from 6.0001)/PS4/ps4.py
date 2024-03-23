@@ -188,13 +188,16 @@ class Patient(object):
             if not bact.is_killed():
                 survived_bacteria += [bact]
         # 2
-        density = len(survived_bacteria) / len(self.bacteria)
+        self.max_pop = max(self.max_pop, len(self.bacteria))
+        density = len(survived_bacteria) / self.max_pop
         # 3
         offsprings = []
         for bact in survived_bacteria:
-            offspring = [bact.reproduce(density)]
-            if offspring != None:
-                offsprings += [offspring]
+            try:
+                offsprings += [bact.reproduce(density)]
+            except:
+                pass
+        
         # 4
         self.bacteria = survived_bacteria + offsprings
         
@@ -216,7 +219,10 @@ def calc_pop_avg(populations, n):
     Returns:
         float: The average bacteria population size at time step n
     """
-    pass  # TODO
+    all_populations = 0
+    for population in populations: # for each trial in populations
+        all_populations += population[n] # add the population at time step n
+    return all_populations / len(populations) # return the average
 
 
 def simulation_without_antibiotic(num_bacteria,
@@ -252,11 +258,33 @@ def simulation_without_antibiotic(num_bacteria,
         populations (list of lists or 2D array): populations[i][j] is the
             number of bacteria in trial i at time step j
     """
-    pass  # TODO
+    populations = [[0] * 300 for i in range(num_trials)]
+    for i in range(num_trials):
+        # instantiate a list of SimpleBacteria
+        bacterias = []
+        for bacteria in range(num_bacteria):
+            bacterias += [SimpleBacteria(birth_prob, death_prob)]
+        # instantiate a Patient using the list of SimpleBacteria
+        patient = Patient(bacterias, max_pop)
+        # simulate changes to the bacteria population for 300 timesteps and record in populations
+        for j in range(300):
+            populations[i][j] = len(patient.bacteria)
+            patient.update()
+    # prepare the lists for plotting
+    x = []
+    y = []
+    for j in range(300):
+        x += [j]
+        y += [calc_pop_avg(populations, j)] # calculate the avg population at time step j and add to y list
+    # plot the average bacteria population size
+    make_one_curve_plot(x, y, 'time step', 'pop avg', 'average bacteria population in each time step')
+    
+    return populations
+    
 
 
 # When you are ready to run the simulation, uncomment the next line
-# populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
+populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
 
 ##########################
 # PROBLEM 3
