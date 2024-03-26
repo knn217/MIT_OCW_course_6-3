@@ -163,8 +163,11 @@ def generate_models(x, y, degs):
         a list of pylab arrays, where each array is a 1-d array of coefficients
         that minimizes the squared error of the fitting polynomial
     """
-    # TODO
-    pass
+    # use the built in polyfit function in pylab 
+    coefs = []
+    for deg in degs:
+        coefs += [pylab.polyfit(x, y, deg)] # polyfit returns pylab array so we just put need to it in a list
+    return coefs
 
 
 def r_squared(y, estimated):
