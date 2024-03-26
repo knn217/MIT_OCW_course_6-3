@@ -183,8 +183,10 @@ def r_squared(y, estimated):
     Returns:
         a float for the R-squared error term
     """
-    # TODO
-    pass
+    # This function copies the method in the lecture improved on it a bit
+    mean_error = ((estimated - y)**2).mean() # use mean instead of sum() and then divide by len() like in the lecture
+    return 1 - (mean_error / pylab.var(y)) # use the built in variance function from pylab for quick calculation
+    
 
 def evaluate_models_on_training(x, y, models):
     """
@@ -212,8 +214,35 @@ def evaluate_models_on_training(x, y, models):
     Returns:
         None
     """
-    # TODO
-    pass
+    best_model = None
+    best_model_y = None
+    best_degree = 0
+    best_error = 0
+    for model in models: # go through each model
+        estimated_y = pylab.polyval(model, x) # get estimated values 
+        rs_error = r_squared(y, estimated_y) # calculate r^2 error
+        if rs_error > best_error or best_error == 0: # the model with the largest r^2 error (< 1) is the best model
+            best_error = rs_error
+            best_degree = len(model) - 1
+            best_model_y = estimated_y 
+            best_model = model
+    
+    pylab.figure()
+    pylab.plot(x, y, 'o', color='b') # data points
+    pylab.plot(x, best_model_y, color='r') # best model
+
+    pylab.xlabel('years')
+    pylab.ylabel('degrees Celsius')
+    if best_degree == 1:
+        pylab.title('R^2: ' + str(best_error) + '\nse over slope: ' + str(se_over_slope(x, y, best_model_y, best_model)))
+    else:
+        pylab.title('R^2: ' + str(best_error))
+    pylab.show()
+    
+x = pylab.array([1, 2, 3])
+y = pylab.array([4, 5, 6])
+models = [pylab.array([1, 2]), pylab.array([2, 3, 4])]
+evaluate_models_on_training(x, y, models)
 
 def gen_cities_avg(climate, multi_cities, years):
     """
