@@ -238,11 +238,7 @@ def evaluate_models_on_training(x, y, models):
     else:
         pylab.title('R^2: ' + str(best_error))
     pylab.show()
-    
-x = pylab.array([1, 2, 3])
-y = pylab.array([4, 5, 6])
-models = [pylab.array([1, 2]), pylab.array([2, 3, 4])]
-evaluate_models_on_training(x, y, models)
+
 
 def gen_cities_avg(climate, multi_cities, years):
     """
@@ -345,8 +341,28 @@ if __name__ == '__main__':
     pass 
 
     # Part A.4
-    # TODO: replace this line with your code
-
+    # 4.I
+    cl = Climate('data.csv')
+    x = pylab.array([])
+    y = pylab.array([])
+    for year in TRAINING_INTERVAL:
+        x = pylab.append(x, year)
+        jan_10 = cl.get_daily_temp('NEW YORK', 1, 10, year) # only get data in jan 10th
+        y = pylab.append(y, jan_10)    
+    degs = [1, 2, 3, 4, 5] # try 5 degrees
+    models = generate_models(x, y, degs)
+    evaluate_models_on_training(x, y, models)
+    
+    # 4.II
+    x = pylab.array([]) # reset x
+    y = pylab.array([]) # reset y
+    for year in TRAINING_INTERVAL:
+        x = pylab.append(x, year)
+        mean = cl.get_yearly_temp('NEW YORK', year).mean() # get the yearly data's mean
+        y = pylab.append(y, mean)    
+    models = generate_models(x, y, degs)
+    evaluate_models_on_training(x, y, models)
+    
     # Part B
     # TODO: replace this line with your code
 
