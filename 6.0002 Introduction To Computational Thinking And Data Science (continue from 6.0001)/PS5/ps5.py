@@ -278,8 +278,15 @@ def moving_average(y, window_length):
         an 1-d pylab array with the same length as y storing moving average of
         y-coordinates of the N sample points
     """
-    # TODO
-    pass
+    mov_avg = pylab.array([])
+    for i in range(len(y)):
+        s = 0
+        for j in range(window_length):
+            if i - j < 0: # if index < 0, break out of loop
+                break
+            s += y[i-j] # the window start with the largest index and then decrease by 1 each iteration
+        mov_avg = pylab.append(mov_avg, s/min(i + 1, window_length)) # # divide sum by the min value between i+1 and window length
+    return mov_avg
 
 def rmse(y, estimated):
     """
@@ -372,6 +379,7 @@ if __name__ == '__main__':
     '''
     
     # Part B
+    '''
     x = pylab.array([]) # reset x
     for year in TRAINING_INTERVAL:
         x = pylab.append(x, year)
@@ -379,9 +387,17 @@ if __name__ == '__main__':
     degs = [1] # try 1 degrees
     models = generate_models(x, y, degs)
     evaluate_models_on_training(x, y, models)
+    '''
 
     # Part C
-    # TODO: replace this line with your code
+    x = pylab.array([]) # reset x
+    for year in TRAINING_INTERVAL:
+        x = pylab.append(x, year)
+    y = gen_cities_avg(climate, CITIES, TRAINING_INTERVAL)
+    y = moving_average(y, 5)
+    degs = [1] # try 1 degrees
+    models = generate_models(x, y, degs)
+    evaluate_models_on_training(x, y, models)
 
     # Part D.2
     # TODO: replace this line with your code
