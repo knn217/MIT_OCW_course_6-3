@@ -318,8 +318,18 @@ def gen_std_devs(climate, multi_cities, years):
         this array corresponds to the standard deviation of the average annual 
         city temperatures for the given cities in a given year.
     """
-    # TODO
-    pass
+    annual_avg_temp = pylab.array([]) #     
+    for year in years:
+        temp = pylab.array([])
+        for city in multi_cities:
+            if len(temp) == 0: # if temp is empty
+                temp = pylab.append(temp, climate.get_yearly_temp(city, year)) # append each city's yearly data's 
+            else: # if temp not empty
+                temp += climate.get_yearly_temp(city, year) # add (array) tempature of each city by day
+        temp /= len(multi_cities) # average temp
+        annual_avg_temp = pylab.append(annual_avg_temp, pylab.var(temp) ** 0.5) # append the mean of annual tempstandard deviation (variance ** 0.5) of avg temp 
+        
+    return annual_avg_temp
 
 def evaluate_models_on_testing(x, y, models):
     """
@@ -417,6 +427,7 @@ if __name__ == '__main__':
     '''
     
     # Part D.2
+    '''
     x_train = pylab.array([])
     for year in TRAINING_INTERVAL:
         x_train = pylab.append(x_train, year)
@@ -432,6 +443,15 @@ if __name__ == '__main__':
     y_test = gen_cities_avg(climate, CITIES, TESTING_INTERVAL) # generate y values from the testing interval
     y_test = moving_average(y_test, 5)
     evaluate_models_on_training(x_test, y_test, models) # apply generated models on testing data
+    '''
     
     # Part E
-    # TODO: replace this line with your code
+    x_train = pylab.array([])
+    for year in TRAINING_INTERVAL:
+        x_train = pylab.append(x_train, year)
+    y_train = gen_std_devs(climate, CITIES, TRAINING_INTERVAL) # compute training standard deviation
+    y_train = moving_average(y_train, 5) # moving 5 year avg on standard deviations
+    degs = [1] # try 1 degrees
+    models = generate_models(x_train, y_train, degs) # generate models on the training data
+    evaluate_models_on_training(x_train, y_train, models) # apply generated models on training data
+    
