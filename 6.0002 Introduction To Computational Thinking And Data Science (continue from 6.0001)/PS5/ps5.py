@@ -380,7 +380,7 @@ if __name__ == '__main__':
         y = pylab.append(y, jan_10)    
     degs = [1] # try 1 degrees
     models = generate_models(x, y, degs)
-    evaluate_models_on_training(x, y, models)
+    evaluate_models_on_training(x, y, models) # apply generated models on training data
     
     # 4.II
     x = pylab.array([]) # reset x
@@ -390,7 +390,7 @@ if __name__ == '__main__':
         mean = climate.get_yearly_temp('NEW YORK', year).mean() # get the yearly data's mean
         y = pylab.append(y, mean)    
     models = generate_models(x, y, degs)
-    evaluate_models_on_training(x, y, models)
+    evaluate_models_on_training(x, y, models) # apply generated models on training data
     '''
     
     # Part B
@@ -401,10 +401,11 @@ if __name__ == '__main__':
     y = gen_cities_avg(climate, CITIES, TRAINING_INTERVAL)
     degs = [1] # try 1 degrees
     models = generate_models(x, y, degs)
-    evaluate_models_on_training(x, y, models)
+    evaluate_models_on_training(x, y, models) # apply generated models on training data
     '''
 
     # Part C
+    '''
     x = pylab.array([]) # reset x
     for year in TRAINING_INTERVAL:
         x = pylab.append(x, year)
@@ -412,10 +413,25 @@ if __name__ == '__main__':
     y = moving_average(y, 5)
     degs = [1] # try 1 degrees
     models = generate_models(x, y, degs)
-    evaluate_models_on_training(x, y, models)
-
+    evaluate_models_on_training(x, y, models) # apply generated models on training data
+    '''
+    
     # Part D.2
-    # TODO: replace this line with your code
-
+    x_train = pylab.array([])
+    for year in TRAINING_INTERVAL:
+        x_train = pylab.append(x_train, year)
+    y_train = gen_cities_avg(climate, CITIES, TRAINING_INTERVAL) # generate y values from the training interval
+    y_train = moving_average(y_train, 5)
+    degs = [1, 2, 20] # try 1, 2, 20 degrees
+    models = generate_models(x_train, y_train, degs) # generate models on the training data
+    evaluate_models_on_training(x_train, y_train, models) # apply generated models on training data
+    
+    x_test = pylab.array([])
+    for year in TESTING_INTERVAL:
+        x_test = pylab.append(x_test, year)
+    y_test = gen_cities_avg(climate, CITIES, TESTING_INTERVAL) # generate y values from the testing interval
+    y_test = moving_average(y_test, 5)
+    evaluate_models_on_training(x_test, y_test, models) # apply generated models on testing data
+    
     # Part E
     # TODO: replace this line with your code
