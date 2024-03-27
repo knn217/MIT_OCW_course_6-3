@@ -255,8 +255,14 @@ def gen_cities_avg(climate, multi_cities, years):
         this array corresponds to the average annual temperature over the given
         cities for a given year.
     """
-    # TODO
-    pass
+    annual_avg_temp = pylab.array([]) #     
+    for year in years:
+        temp = pylab.array([])
+        for city in multi_cities:
+            temp = pylab.append(temp, climate.get_yearly_temp(city, year)) # append each city's yearly data's 
+        annual_avg_temp = pylab.append(annual_avg_temp, temp.mean()) # append the mean of annual temp 
+        
+    return annual_avg_temp
 
 def moving_average(y, window_length):
     """
@@ -342,14 +348,15 @@ if __name__ == '__main__':
 
     # Part A.4
     # 4.I
-    cl = Climate('data.csv')
+    climate = Climate('data.csv')
+    '''
     x = pylab.array([])
     y = pylab.array([])
     for year in TRAINING_INTERVAL:
         x = pylab.append(x, year)
-        jan_10 = cl.get_daily_temp('NEW YORK', 1, 10, year) # only get data in jan 10th
+        jan_10 = climate.get_daily_temp('NEW YORK', 1, 10, year) # only get data in jan 10th
         y = pylab.append(y, jan_10)    
-    degs = [1, 2, 3, 4, 5] # try 5 degrees
+    degs = [1] # try 1 degrees
     models = generate_models(x, y, degs)
     evaluate_models_on_training(x, y, models)
     
@@ -358,13 +365,20 @@ if __name__ == '__main__':
     y = pylab.array([]) # reset y
     for year in TRAINING_INTERVAL:
         x = pylab.append(x, year)
-        mean = cl.get_yearly_temp('NEW YORK', year).mean() # get the yearly data's mean
+        mean = climate.get_yearly_temp('NEW YORK', year).mean() # get the yearly data's mean
         y = pylab.append(y, mean)    
     models = generate_models(x, y, degs)
     evaluate_models_on_training(x, y, models)
+    '''
     
     # Part B
-    # TODO: replace this line with your code
+    x = pylab.array([]) # reset x
+    for year in TRAINING_INTERVAL:
+        x = pylab.append(x, year)
+    y = gen_cities_avg(climate, CITIES, TRAINING_INTERVAL)
+    degs = [1] # try 1 degrees
+    models = generate_models(x, y, degs)
+    evaluate_models_on_training(x, y, models)
 
     # Part C
     # TODO: replace this line with your code
