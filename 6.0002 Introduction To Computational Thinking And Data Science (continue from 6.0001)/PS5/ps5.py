@@ -301,8 +301,7 @@ def rmse(y, estimated):
     Returns:
         a float for the root mean square error term
     """
-    # TODO
-    pass
+    return (((y - estimated)**2).mean())**0.5
 
 def gen_std_devs(climate, multi_cities, years):
     """
@@ -346,8 +345,24 @@ def evaluate_models_on_testing(x, y, models):
     Returns:
         None
     """
-    # TODO
-    pass
+    best_model_y = None
+    best_error = 0
+    for model in models: # go through each model
+        estimated_y = pylab.polyval(model, x) # get estimated values 
+        rs_error = rmse(y, estimated_y) # calculate r^2 error
+        if rs_error > best_error or best_error == 0: # the model with the largest r^2 error (< 1) is the best model
+            best_error = rs_error
+            best_model_y = estimated_y 
+    
+    pylab.figure()
+    pylab.plot(x, y, 'o', color='b') # data points
+    pylab.plot(x, best_model_y, color='r') # best model
+
+    pylab.xlabel('years')
+    pylab.ylabel('degrees Celsius')
+    pylab.title('R^2: ' + str(best_error))
+    pylab.show()
+    
 
 if __name__ == '__main__':
 
